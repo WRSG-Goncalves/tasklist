@@ -1,50 +1,64 @@
 import './App.css';
 import { useState } from 'react';
+import { MdDelete } from "react-icons/md";
 
 function App() {
-  const ENTER_KEY= 13;
-  const ESC_KEY= 27;
+  const initialTasks = []
 
-  
-  const [value , setValue] = useState("");
-  
-  const erase = () => {
-    setValue("");
+  const [tasks, setTasks] = useState(initialTasks);
+
+
+  const onToggle = (task) => {
+
+    setTasks(tasks.map((obj => (obj.id === task.id ? { ...obj, checked: !task.checked } : obj))));
+
+    console.log('toggle', tasks)
   }
 
-  const onChange = (e) => {
-    setValue(e.target.value);
+  const onRemove = (task) => {
+    setTasks(tasks.filter((obj) => obj.id !== task.id))
+    console.log('remove', tasks)
   }
 
-  const onSubmit = () =>{
-    console.log('submit',`valor é: ${value}`);
-    erase();
-  }
-
-  const onKeyDown = (e) => {
-    if (e.which === ENTER_KEY) {
-      onSubmit()
-     } else if (e.which === ESC_KEY) {
-      erase();
-     }
-    }
-
-      
   return (
-
     <section id='app' className='container'>
       <header>
         <h1 className='title'>contole de tarefas</h1>
       </header>
       <section className='main'>
-        <input type="text" className='new-task' placeholder='o que precisa ser feito'
-        value={value} 
-        onChange={onChange}
-        onKeyDown={onKeyDown}
-        />
         
+        {/*  <newTask />
+        <input type="text" className='new-task' placeholder='o que precisa ser feito'
+          value={value}
+          onChange={onChange}
+          onKeyDown={onKeyDown}
+        />
+         */}
+
+        <ul className='task-list'>
+          {
+            tasks.map((task) => (
+              <li key={task.id.toString()} >
+                <span
+                  className={['task', task.checked ? "checked" : ""]}
+                  onClick={() => onToggle(task)}
+                  role="button"
+                  tabIndex={0}
+                >{task.id} - {task.title}
+                </span>
+                <button
+                  className='remove'
+                  type='button'
+                  onClick={() => onRemove(task)}
+                >
+                  <MdDelete size={28} />
+                </button>
+              </li>
+            ))
+          }
+        </ul>
       </section>
-      
+
     </section>
   );
 }
